@@ -98,17 +98,7 @@ class CrosswordCreator():
         Update `self.domains` such that each variable is node-consistent.
         (Remove any values that are inconsistent with a variable's unary
          constraints; in this case, the length of the word.)
-        """
-        # to_remove = set()
-        # all_remove = dict()
-        # for var in self.domains.keys():
-        #     for word in self.crossword.words:
-        #         if len(word) != var.length:
-        #             to_remove.add(word)
-        #     all_remove[var] = to_remove.copy()
-        #     to_remove.clear()
-        #     self.domains[var] = self.domains[var].difference(all_remove[var])
-            
+        """ 
         for var in list(self.domains.keys()):
             valid_words = {word for word in self.domains[var] if len(word) == var.length}
             self.domains[var] = valid_words
@@ -168,10 +158,6 @@ class CrosswordCreator():
         Return True if `assignment` is complete (i.e., assigns a value to each
         crossword variable); return False otherwise.
         """
-        # for var in assignment.keys():
-        #     if assignment[var] is None:
-        #         return False
-        # return True
         for var in self.crossword.variables:
             if var not in assignment:
                 return False
