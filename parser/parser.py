@@ -1,4 +1,5 @@
 import nltk
+# nltk.download('punkt_tab') # Uncomment this line to download the punkt tokenizer if not already downloaded
 import sys
 
 TERMINALS = """
@@ -15,7 +16,48 @@ V -> "smiled" | "tell" | "were"
 """
 
 NONTERMINALS = """
-S -> N V
+S -> NP VP | S Conj S | VP NP | NN | PP
+
+NP -> N
+NP -> NN
+NP -> N N N
+NP -> Det N
+NP -> Det NN
+NP -> Det NN PP
+NP -> Adj N
+NP -> Det Adj N
+NP -> Det Adj Adj N
+NP -> Det Adj Adj Adj N
+NP -> N PP
+NP -> Det N PP
+NP -> Det N PP PP
+NP -> Det Adj N PP
+NP -> Det Adj Adj N PP
+NP -> Det Adj Adj Adj N PP
+NP -> Det N Conj Det N
+NP -> N Conj N
+NP -> Det N Conj N
+NP -> N Conj Det N
+NP -> NP P NP
+NP -> NP Adv
+
+
+NN -> N N
+
+VP -> V
+VP -> V NP
+VP -> V NP NP
+VP -> V PP
+VP -> V NP PP
+VP -> V Adv
+VP -> V V
+VP -> V NP Adv
+VP -> V P NP
+VP -> V P Det
+VP -> V Conj V
+
+PP -> P NP
+
 """
 
 grammar = nltk.CFG.fromstring(NONTERMINALS + TERMINALS)
@@ -62,7 +104,13 @@ def preprocess(sentence):
     and removing any word that does not contain at least one alphabetic
     character.
     """
-    raise NotImplementedError
+    words = nltk.word_tokenize(sentence)
+    processed = []
+    for word in words:
+        word_lower = word.lower()
+        if any(char.isalpha() for char in word_lower):
+            processed.append(word_lower)
+    return processed
 
 
 def np_chunk(tree):
@@ -72,7 +120,13 @@ def np_chunk(tree):
     whose label is "NP" that does not itself contain any other
     noun phrases as subtrees.
     """
-    raise NotImplementedError
+    chunks = []
+
+    for subtree in tree.subtrees():
+        if subtree.label() == 'NP':
+            chunks.append(subtree)
+
+    return chunks
 
 
 if __name__ == "__main__":
